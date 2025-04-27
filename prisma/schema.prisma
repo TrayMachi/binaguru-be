@@ -5,7 +5,7 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client"
+  provider = "prisma-client-js"
   output   = "../generated/prisma"
 }
 
@@ -25,14 +25,14 @@ model User {
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
 
-  Submissions        Submissions[]
-  Courses            Courses[]
+  Submissions        Submission[]
+  Courses            Course[]
   RPP                RPP[]
   UserCourseProgress UserCourseProgress[]
 }
 
-model Courses {
-  id                 String   @id
+model Course {
+  id                 String   @id @default(cuid())
   userId             String
   title              String
   description        String
@@ -44,68 +44,82 @@ model Courses {
   user               User     @relation(fields: [userId], references: [id])
   Modules            Modules[]
   UserCourseProgress UserCourseProgress[]
+
+  @@index([userId])
 }
 
 model Modules {
-  id                 String   @id
+  id                 String   @id @default(cuid())
   courseId           String
   title              String
   contentMarkdown    String
   createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
+  updatedAt          DateTime @default(now())
   
-  course             Courses @relation(fields: [courseId], references: [id])
-  Assignments        Assignments?
+  course             Course @relation(fields: [courseId], references: [id])
+  Assignments        Assignment?
+
+  @@index([courseId])
 }
 
-model Assignments {
-  id                 String       @id
+model Assignment {
+  id                 String       @id @default(cuid())
   moduleId           String       @unique
   title              String
   description        String
   createdAt          DateTime     @default(now())
-  updatedAt          DateTime     @updatedAt
+  updatedAt          DateTime     @default(now())
 
-  submission         Submissions?
+  submission         Submission[]
   module             Modules     @relation(fields: [moduleId], references: [id])
+
+  @@index([moduleId])
 }
 
-model Submissions {
-  id                 String      @id
-  assignmentId       String      @unique
+model Submission {
+  id                 String      @id @default(cuid())
+  assignmentId       String      
   userId             String
   contentMarkdown    String
   attempts           Int         @default(1)
   createdAt          DateTime    @default(now())
-  updatedAt          DateTime    @updatedAt
+  updatedAt          DateTime    @default(now())
 
-  assignment         Assignments @relation(fields: [assignmentId], references: [id])
+  assignment         Assignment @relation(fields: [assignmentId], references: [id])
   user               User        @relation(fields: [userId], references: [id])
+
+  @@index([assignmentId])
+  @@index([userId])
+  @@unique([assignmentId, userId])
 }
 
 model RPP {
-  id                 String   @id
+  id                 String   @id @default(cuid())
   userId             String
   title              String
   description        String
   contentMarkdown    String
   classLevel         String
   createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
+  updatedAt          DateTime @default(now())
 
   user               User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
 }
 
 model UserCourseProgress {
-  id                 String   @id
+  id                 String   @id @default(cuid())
   userId             String
   courseId           String
   completedModules   Int      @default(0)
   createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
+  updatedAt          DateTime @default(now())
 
   user               User     @relation(fields: [userId], references: [id])
-  course             Courses  @relation(fields: [courseId], references: [id])
+  course             Course  @relation(fields: [courseId], references: [id])
 
+  @@index([userId])
+  @@index([courseId])
   @@unique([userId, courseId])
 }
