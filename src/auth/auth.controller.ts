@@ -19,12 +19,8 @@ export class AuthController {
   ) {}
 
   @Post('register')
-  async register(
-    @Body() body: RegisterDtoClass,
-  ) {
-    await this.authService.register(
-        body,
-    );
+  async register(@Body() body: RegisterDtoClass) {
+    await this.authService.register(body);
 
     return this.responseUtil.response({
       code: HttpStatus.OK,

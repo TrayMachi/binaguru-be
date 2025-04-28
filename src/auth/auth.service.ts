@@ -7,6 +7,7 @@ import { ConfigService } from '@nestjs/config';
 import { AuthFirebaseService } from 'src/firebase/firebase.service';
 import { RegisterDtoClass } from './auth.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { Level } from 'generated/prisma';
 
 @Injectable()
 export class AuthService {
@@ -18,7 +19,14 @@ export class AuthService {
 
   async register(registerDto: RegisterDtoClass) {
     try {
-      registerDto.email;
+      const user = await this.prismaService.user.findUnique({
+        where: { email: registerDto.email },
+      });
+
+      if (user) {
+        throw new BadRequestException('User already exists');
+      }
+
       const userRecord = await this.authFirebaseService.createUser({
         email: registerDto.email,
         password: registerDto.password,
@@ -29,23 +37,19 @@ export class AuthService {
         throw new BadRequestException('User registration failed');
       }
 
-      const user = await this.prismaService.user.findUnique({
-        where: { email: registerDto.email },
+      await this.prismaService.user.create({
+        data: {
+          id: userRecord.uid,
+          email: registerDto.email,
+          username: registerDto.username,
+          yoe: registerDto.yoe,
+          pros: registerDto.pros,
+          cons: registerDto.cons,
+          location: registerDto.location,
+          birthDate: new Date(registerDto.birthDate),
+          level: registerDto.level as Level,
+        },
       });
-
-      if (!user) {
-        await this.prismaService.user.create({
-          data: {
-            id: userRecord.uid,
-            email: registerDto.email,
-            username: registerDto.username,
-            yoe: registerDto.yoe,
-            pros: registerDto.pros,
-            cons: registerDto.cons,
-            location: registerDto.location,
-          },
-        });
-      }
 
       return {
         uid: userRecord.uid,
