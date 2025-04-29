@@ -56,6 +56,14 @@ export class CourseService {
             completedModules: true,
           },
         },
+        language: true,
+        courseType: true,
+        courseSubject: true,
+        user: {
+          select: {
+            cons: true,
+          },
+        },
       },
     });
 
@@ -73,6 +81,10 @@ export class CourseService {
         description: course.description,
         level: course.level,
         progress: progressPercentage,
+        language: course.language,
+        courseType: course.courseType,
+        courseSubject: course.courseSubject,
+        ownerCons: course.user.cons,
       };
     });
   }
@@ -103,6 +115,14 @@ export class CourseService {
         title: true,
         description: true,
         level: true,
+        language: true,
+        courseType: true,
+        courseSubject: true,
+        user: {
+          select: {
+            cons: true,
+          },
+        },
       },
       take: 3,
     });
@@ -117,6 +137,14 @@ export class CourseService {
         title: true,
         description: true,
         level: true,
+        language: true,
+        courseType: true,
+        courseSubject: true,
+        user: {
+          select: {
+            cons: true,
+          },
+        },
       },
     });
 

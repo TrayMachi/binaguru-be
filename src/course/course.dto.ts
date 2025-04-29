@@ -7,6 +7,10 @@ export const CourseSchema = z.object({
   title: z.string(),
   description: z.string(),
   level: z.nativeEnum(Level),
+  language: z.string(),
+  courseType: z.string(),
+  courseSubject: z.string(),
+  ownerCons: z.array(z.string()),
 });
 
 export const UserCourseSchema = CourseSchema.extend({
