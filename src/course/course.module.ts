@@ -3,9 +3,10 @@ import { CourseController } from './course.controller';
 import { CourseService } from './course.service';
 import { PrismaModule } from '../prisma/prisma.module';
 import { ResponseUtil } from '../common/utils/response.util';
+import { UserModule } from '../user/user.module';
 
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModule, UserModule],
   controllers: [CourseController],
   providers: [CourseService, ResponseUtil],
   exports: [CourseService],

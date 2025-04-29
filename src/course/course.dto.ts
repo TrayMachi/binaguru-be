@@ -2,21 +2,40 @@ import { z } from 'zod';
 import { createZodDto } from 'nestjs-zod';
 import { Level } from '../../generated/prisma';
 
-export const BaseCourseSchema = z.object({
+export const CourseSchema = z.object({
   id: z.string(),
   title: z.string(),
   description: z.string(),
   level: z.nativeEnum(Level),
 });
 
-export const UserCourseSchema = BaseCourseSchema.extend({
+export const UserCourseSchema = CourseSchema.extend({
   progress: z.number().min(0).max(100).default(0),
 });
 
 export const CourseGroupsSchema = z.object({
   courseku: z.array(UserCourseSchema),
-  rekomendasi: z.array(BaseCourseSchema),
-  allcourse: z.array(BaseCourseSchema),
+  rekomendasi: z.array(CourseSchema),
+  allcourse: z.array(CourseSchema),
 });
 
 export class CourseGroupsDto extends createZodDto(CourseGroupsSchema) {}
+
+export const ModuleWithSubmissionSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  hasAssignment: z.boolean(),
+  submissionLink: z.string().optional(),
+});
+
+export const CourseDetailSchema = z.object({
+  course: z.object({
+    id: z.string(),
+    title: z.string(),
+    description: z.string(),
+    level: z.nativeEnum(Level),
+  }),
+  modules: z.array(ModuleWithSubmissionSchema),
+});
+
+export class CourseDetailDto extends createZodDto(CourseDetailSchema) {}

@@ -121,4 +121,66 @@ export class CourseService {
 
     return courses;
   }
+
+  async getCourseById(courseId: string, userId: string) {
+    const course = await this.prisma.course.findUnique({
+      where: { id: courseId },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        level: true,
+        Modules: {
+          select: {
+            id: true,
+            title: true,
+            Assignments: {
+              select: {
+                id: true,
+                submission: {
+                  where: {
+                    userId: userId,
+                  },
+                  select: {
+                    contentLink: true,
+                  },
+                },
+              },
+            },
+          },
+          orderBy: {
+            createdAt: 'asc',
+          },
+        },
+      },
+    });
+
+    if (!course) {
+      throw new Error('Course not found');
+    }
+
+    const modules = course.Modules.map((module) => {
+      const assignment = module.Assignments;
+      const hasAssignment = !!assignment;
+      const submission = assignment?.submission[0];
+      const submissionLink = submission?.contentLink;
+
+      return {
+        id: module.id,
+        title: module.title,
+        hasAssignment,
+        ...(submissionLink && { submissionLink }),
+      };
+    });
+
+    return {
+      course: {
+        id: course.id,
+        title: course.title,
+        description: course.description,
+        level: course.level,
+      },
+      modules,
+    };
+  }
 }
