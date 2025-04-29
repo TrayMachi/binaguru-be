@@ -1,13 +1,20 @@
 import { z } from 'zod';
 import { createZodDto } from 'nestjs-zod';
 
-export const ModuleDetailSchema = z.object({
-  id: z.string(),
-  title: z.string(),
+export const CreateModuleSchema = z.object({
   courseId: z.string(),
-  contentMarkdown: z.string(),
-  assignmentId: z.string().nullable().optional(),
-  submissionLink: z.string().nullable().optional(),
+  title: z.string().min(3, 'Title must be at least 3 characters'),
+  contentMarkdown: z.string().min(20, 'Content must be at least 20 characters'),
+  assignment: z
+    .object({
+      title: z
+        .string()
+        .min(3, 'Assignment title must be at least 3 characters'),
+      description: z
+        .string()
+        .min(10, 'Assignment description must be at least 10 characters'),
+    })
+    .optional(),
 });
 
-export class ModuleDetailDto extends createZodDto(ModuleDetailSchema) {}
+export class CreateModuleDto extends createZodDto(CreateModuleSchema) {}
