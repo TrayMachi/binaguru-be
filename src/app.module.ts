@@ -11,6 +11,8 @@ import { APP_PIPE } from '@nestjs/core';
 import { UserModule } from './user/user.module';
 import { CourseModule } from './course/course.module';
 import { ModuleModule } from './modules/module.module';
+import { SubmissionModule } from './submission/submission.module';
+import { AssignmentModule } from './assignment/assignment.module';
 
 @Module({
   imports: [
@@ -21,6 +23,8 @@ import { ModuleModule } from './modules/module.module';
     UserModule,
     CourseModule,
     ModuleModule,
+    SubmissionModule,
+    AssignmentModule,
   ],
   controllers: [AppController],
   providers: [
