@@ -39,6 +39,9 @@ model Course {
   title              String
   description        String
   level              Level
+  language           String
+  courseType         String
+  courseSubject      String
   moduleCount        Int      @default(0)
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
