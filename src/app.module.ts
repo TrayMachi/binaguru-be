@@ -10,6 +10,7 @@ import { ZodValidationPipe } from 'nestjs-zod';
 import { APP_PIPE } from '@nestjs/core';
 import { UserModule } from './user/user.module';
 import { CourseModule } from './course/course.module';
+import { ModuleModule } from './modules/module.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { CourseModule } from './course/course.module';
     AuthModule,
     UserModule,
     CourseModule,
+    ModuleModule,
   ],
   controllers: [AppController],
   providers: [
