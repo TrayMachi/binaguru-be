@@ -13,6 +13,7 @@ import { CourseModule } from './course/course.module';
 import { ModuleModule } from './modules/module.module';
 import { SubmissionModule } from './submission/submission.module';
 import { AssignmentModule } from './assignment/assignment.module';
+import { RPPModule } from './rpp/rpp.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { AssignmentModule } from './assignment/assignment.module';
     ModuleModule,
     SubmissionModule,
     AssignmentModule,
+    RPPModule,
   ],
   controllers: [AppController],
   providers: [
