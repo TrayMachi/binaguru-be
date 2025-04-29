@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Level } from '../../generated/prisma';
+import { CreateCourseDto } from './course.dto';
 
 @Injectable()
 export class CourseService {
@@ -182,5 +183,33 @@ export class CourseService {
       },
       modules,
     };
+  }
+
+  async createCourse(userId: string, courseData: CreateCourseDto) {
+    const newCourse = await this.prisma.course.create({
+      data: {
+        userId: userId,
+        title: courseData.title,
+        description: courseData.description,
+        level: courseData.level,
+        language: courseData.language,
+        courseType: courseData.courseType,
+        courseSubject: courseData.courseSubject,
+        moduleCount: 0,
+      },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        level: true,
+        language: true,
+        courseType: true,
+        courseSubject: true,
+        moduleCount: true,
+        createdAt: true,
+      },
+    });
+
+    return newCourse;
   }
 }

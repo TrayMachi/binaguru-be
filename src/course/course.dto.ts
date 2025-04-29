@@ -39,3 +39,14 @@ export const CourseDetailSchema = z.object({
 });
 
 export class CourseDetailDto extends createZodDto(CourseDetailSchema) {}
+
+export const CreateCourseSchema = z.object({
+  title: z.string().min(3, 'Title must be at least 3 characters'),
+  description: z.string().min(10, 'Description must be at least 10 characters'),
+  level: z.nativeEnum(Level),
+  language: z.string(),
+  courseType: z.string(),
+  courseSubject: z.string(),
+});
+
+export class CreateCourseDto extends createZodDto(CreateCourseSchema) {}
