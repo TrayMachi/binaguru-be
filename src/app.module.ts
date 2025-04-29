@@ -8,6 +8,7 @@ import { FirebaseModule } from './firebase/firebase.module';
 import { AuthModule } from './auth/auth.module';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { APP_PIPE } from '@nestjs/core';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { APP_PIPE } from '@nestjs/core';
     ConfigModule.forRoot({ cache: true }),
     FirebaseModule,
     AuthModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [
