@@ -95,20 +95,22 @@ export class CourseService {
     userPros: string[],
     userLevel: Level,
   ) {
-    const recommendedCourses = await this.prisma.course.findMany({
+    let potentialMatches = await this.prisma.course.findMany({
       where: {
         NOT: {
           userId,
         },
-        level: userLevel,
-        courseType: {
-          in: userPros,
-        },
-        user: {
-          cons: {
-            hasSome: userCons,
+        OR: [
+          { level: userLevel },
+          { courseType: { in: userPros } },
+          {
+            user: {
+              cons: {
+                hasSome: userCons,
+              },
+            },
           },
-        },
+        ],
       },
       select: {
         id: true,
@@ -124,8 +126,54 @@ export class CourseService {
           },
         },
       },
-      take: 3,
     });
+
+    if (potentialMatches.length === 0) {
+      potentialMatches = await this.prisma.course.findMany({
+        where: {
+          NOT: {
+            userId,
+          },
+        },
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          level: true,
+          language: true,
+          courseType: true,
+          courseSubject: true,
+          user: {
+            select: {
+              cons: true,
+            },
+          },
+        },
+        take: 3,
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+
+      return potentialMatches;
+    }
+
+    const scoredCourses = potentialMatches.map((course) => {
+      let score = 0;
+
+      if (course.level === userLevel) score += 1;
+      if (userPros.includes(course.courseType)) score += 1;
+
+      const creatorCons = course.user.cons;
+      if (creatorCons.some((con) => userCons.includes(con))) score += 1;
+
+      return { ...course, matchScore: score };
+    });
+
+    const recommendedCourses = scoredCourses
+      .sort((a, b) => b.matchScore - a.matchScore)
+      .slice(0, 3)
+      .map(({ matchScore, ...course }) => course);
 
     return recommendedCourses;
   }
@@ -159,6 +207,18 @@ export class CourseService {
         title: true,
         description: true,
         level: true,
+        language: true,
+        courseType: true,
+        courseSubject: true,
+        moduleCount: true,
+        UserCourseProgress: {
+          where: {
+            userId,
+          },
+          select: {
+            completedModules: true,
+          },
+        },
         Modules: {
           select: {
             id: true,
@@ -202,12 +262,23 @@ export class CourseService {
       };
     });
 
+    const progress = course.UserCourseProgress[0];
+    const completedModules = progress?.completedModules || 0;
+    const totalModules = course.moduleCount || 1;
+    const progressPercentage = Math.floor(
+      (completedModules / totalModules) * 100,
+    );
+
     return {
       course: {
         id: course.id,
         title: course.title,
         description: course.description,
         level: course.level,
+        language: course.language,
+        courseType: course.courseType,
+        courseSubject: course.courseSubject,
+        progress: progressPercentage,
       },
       modules,
     };
