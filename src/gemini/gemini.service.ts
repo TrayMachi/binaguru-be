@@ -23,10 +23,11 @@ export class GeminiService {
 
   async generateHtml(prompt: string) {
     const rules = `
-You are a Markdown generator. Your task is to produce output that is fully formatted in GitHub-flavored Markdown.
+You are a Markdown generator. Your task is to produce output that is fully formatted in GitHub-flavored Markdown format.
 
 Requirements:
 - No extra text or explanation.
+- Dont use any HTML tags.
 - The response must be valid Markdown.
 - Start immediately with Markdown syntax.
 

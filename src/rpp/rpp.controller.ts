@@ -25,17 +25,18 @@ export class RPPController {
   @Get()
   async getAllRPPs(@Req() req: Request) {
     //@ts-expect-error
-    const user: { email: string } = req.user;
+    const user: { sub: string } = req.user;
 
-    const userData = await this.userService.getUserData(user.email);
-    const rpps = await this.rppService.getAllRPPs(userData.id);
+    const rpps = await this.rppService.getAllRPPs(user.sub);
 
     return this.responseUtil.response(
       {
         code: 200,
         message: 'RPPs retrieved successfully',
       },
-      rpps,
+      {
+        data: rpps,
+      },
     );
   }
 
@@ -48,7 +49,9 @@ export class RPPController {
         code: 200,
         message: 'RPP details retrieved successfully',
       },
-      rpp,
+      {
+        data: rpp,
+      },
     );
   }
 

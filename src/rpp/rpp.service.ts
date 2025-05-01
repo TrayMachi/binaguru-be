@@ -82,6 +82,8 @@ You are an expert in Indonesian education. Generate an RPP (Rencana Pelaksanaan 
 
 ## Requirements:
 - The RPP must be in Indonesian language.
+- Dont use any HTML tags.
+- Use emojis to enhance the content.
 - The response must start immediately with valid Markdown.
 - Do not include any explanations outside the Markdown block.
 - Structure the RPP with proper Indonesian education headers (e.g., Tujuan Pembelajaran, Materi, Metode, Penilaian, etc.)
