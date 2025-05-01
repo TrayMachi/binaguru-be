@@ -36,7 +36,7 @@ export class CourseController {
         code: 200,
         message: 'Courses retrieved successfully',
       },
-      groupedCourses,
+      { data: { ...groupedCourses } },
     );
   }
 
@@ -56,7 +56,7 @@ export class CourseController {
         code: 200,
         message: 'Course details retrieved successfully',
       },
-      courseDetail,
+      { data: { courseDetail } },
     );
   }
 
