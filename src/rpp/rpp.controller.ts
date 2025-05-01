@@ -68,7 +68,7 @@ export class RPPController {
         null,
       );
     }
-    
+
     const newRPP = await this.rppService.createRPP(userData, rppData);
 
     return this.responseUtil.response(
@@ -77,11 +77,14 @@ export class RPPController {
         message: 'RPP created successfully',
       },
       {
-        id: newRPP.id,
-        title: newRPP.title,
-        description: newRPP.description,
-        level: newRPP.level,
-        createdAt: newRPP.createdAt,
+        data: {
+          id: newRPP.id,
+          title: newRPP.title,
+          description: newRPP.description,
+          level: newRPP.level,
+          createdAt: newRPP.createdAt,
+          contentMarkdown: newRPP.contentMarkdown,
+        },
       },
     );
   }
