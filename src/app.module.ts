@@ -14,11 +14,13 @@ import { ModuleModule } from './modules/module.module';
 import { SubmissionModule } from './submission/submission.module';
 import { AssignmentModule } from './assignment/assignment.module';
 import { RPPModule } from './rpp/rpp.module';
+import { GeminiModule } from './gemini/gemini.module';
 
 @Module({
   imports: [
     PrismaModule,
     ConfigModule.forRoot({ cache: true }),
+    GeminiModule,
     FirebaseModule,
     AuthModule,
     UserModule,
