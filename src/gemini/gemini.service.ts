@@ -34,7 +34,7 @@ Here is the content I want to format:
 ${prompt}
 `;
     const markdown = await this.generateText(rules);
-    const html = marked.parse(markdown);
+    const html = await marked.parse(markdown);
     return { html };
   }
 }

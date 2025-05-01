@@ -58,7 +58,18 @@ export class RPPController {
     const user: { email: string } = req.user;
 
     const userData = await this.userService.getUserData(user.email);
-    const newRPP = await this.rppService.createRPP(userData.id, rppData);
+
+    if (!userData) {
+      return this.responseUtil.response(
+        {
+          code: 404,
+          message: 'User not found',
+        },
+        null,
+      );
+    }
+    
+    const newRPP = await this.rppService.createRPP(userData, rppData);
 
     return this.responseUtil.response(
       {
