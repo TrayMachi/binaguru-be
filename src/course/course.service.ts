@@ -11,9 +11,9 @@ export class CourseService {
     private readonly gemini: GeminiService,
   ) {}
 
-  async getGroupedCourses(userEmail: string) {
+  async getGroupedCourses(userId: string) {
     const user = await this.prisma.user.findUnique({
-      where: { email: userEmail },
+      where: { id: userId },
       include: {
         UserCourseProgress: true,
       },
@@ -261,6 +261,7 @@ export class CourseService {
       return {
         id: module.id,
         title: module.title,
+        assignmentId: assignment?.id,
         hasAssignment,
         ...(submissionLink && { submissionLink }),
       };
@@ -376,7 +377,7 @@ You are an expert in Indonesian education. Generate a **course module** in **Git
 ## Requirements:
 -  The module must be in ${courseData.language} language.
 -  Don't use any HTML tags.
--  The content must be based on the title (${mod.title}) and description provided (${ parsed.description}).
+-  The content must be based on the title (${mod.title}) and description provided (${parsed.description}).
 -  The description is from the course context and not module context.
 -  Use emojis to enhance the content.
 -  The response must start immediately with valid Markdown.
@@ -385,7 +386,7 @@ You are an expert in Indonesian education. Generate a **course module** in **Git
 
 ## Context:
 - Judul Module: ${mod.title}
-- Deskripsi kursus: ${ parsed.description}
+- Deskripsi kursus: ${parsed.description}
 - Jenjang: ${courseData.level}
 - Bahasa: ${courseData.language}
 - Tipe kursus: ${courseData.courseType}
@@ -401,7 +402,7 @@ Buat modul yang sesuai dengan konteks di atas untuk pembelajaran kepada guru, ag
       const moduleContent = await this.gemini.generateText(prompt);
 
       // Save module with generated content
-      
+
       const newModule = await this.prisma.modules.create({
         data: {
           courseId: newCourse.id,
@@ -420,7 +421,7 @@ Buat modul yang sesuai dengan konteks di atas untuk pembelajaran kepada guru, ag
       }
     }
 
-    return {...newCourse};
+    return { ...newCourse };
   }
 
   async parseCourseMarkdown(markdown: string) {
@@ -431,22 +432,22 @@ Buat modul yang sesuai dengan konteks di atas untuk pembelajaran kepada guru, ag
     let currentModule: any = null;
     let inAssignment = false;
     let buffer: string[] = [];
-  
+
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i].trim();
-  
+
       // Course title (assume first H1)
       if (!title && line.startsWith('# ')) {
         title = line.replace(/^# /, '').trim();
         continue;
       }
-  
+
       // Course description (assume first paragraph after title)
       if (!description && line && !line.startsWith('#')) {
         description = line;
         continue;
       }
-  
+
       // Module title (assume H2)
       if (line.startsWith('## ')) {
         if (currentModule) {
@@ -464,7 +465,7 @@ Buat modul yang sesuai dengan konteks di atas untuk pembelajaran kepada guru, ag
         inAssignment = false;
         continue;
       }
-  
+
       // Assignment (assume starts with "Tugas:" or "**Tugas:**")
       if (line.match(/^(\*\*)?Tugas:/i)) {
         if (currentModule && !currentModule.assignment) {
@@ -482,26 +483,26 @@ Buat modul yang sesuai dengan konteks di atas untuk pembelajaran kepada guru, ag
           continue;
         }
       }
-  
+
       // Assignment content (after "Tugas:")
       if (inAssignment && currentModule && currentModule.assignment) {
         currentModule.assignment.description += '\n' + line;
         continue;
       }
-  
+
       // Module content (only if not in assignment)
       if (currentModule && !inAssignment) {
         buffer.push(line);
       }
     }
-  
+
     // Push last module
     if (currentModule) {
       const content = buffer.join('\n').trim();
       currentModule.content = content || 'Materi modul belum diisi.';
       modules.push(currentModule);
     }
-  
+
     return { title, description, modules };
   }
 }

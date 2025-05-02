@@ -25,10 +25,10 @@ export class CourseController {
   @Get()
   async getGroupedCourses(@Req() req: Request) {
     //@ts-expect-error
-    const user: { email: string } = req.user;
+    const user: { sub: string } = req.user;
 
     const groupedCourses = await this.courseService.getGroupedCourses(
-      user.email,
+      user.sub,
     );
 
     return this.responseUtil.response(
@@ -75,7 +75,7 @@ export class CourseController {
         code: 201,
         message: 'Course created successfully',
       },
-      { data: { newCourse } },
+      { data: { ...newCourse } },
     );
   }
 }
