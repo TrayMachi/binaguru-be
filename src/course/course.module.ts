@@ -6,9 +6,10 @@ import { ResponseUtil } from '../common/utils/response.util';
 import { UserModule } from '../user/user.module';
 import { FirebaseAuthGuard } from 'src/auth/firebase-auth.guard';
 import { FirebaseModule } from 'src/firebase/firebase.module';
+import { GeminiModule } from 'src/gemini/gemini.module';
 
 @Module({
-  imports: [PrismaModule, UserModule, FirebaseModule],
+  imports: [PrismaModule, UserModule, FirebaseModule, GeminiModule],
   controllers: [CourseController],
   providers: [CourseService, ResponseUtil, FirebaseAuthGuard],
   exports: [CourseService],

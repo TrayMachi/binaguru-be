@@ -20,8 +20,6 @@ const firebaseProvider = {
       client_x509_cert_url: configService.get<string>('CLIENT_CERT_URL'),
       universe_domain: configService.get<string>('UNIVERSAL_DOMAIN'),
     } as admin.ServiceAccount;
-
-    console.log('Firebase config:', firebaseConfig);
   
     return admin.initializeApp({
       credential: admin.credential.cert(firebaseConfig),
