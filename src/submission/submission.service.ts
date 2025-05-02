@@ -71,6 +71,7 @@ export class SubmissionService {
         },
         data: {
           contentLink: submissionData.contentLink,
+          contentMarkdown: evaluation.html,
           attempts: { increment: 1 },
           updatedAt: new Date(),
         },
@@ -80,6 +81,7 @@ export class SubmissionService {
         data: {
           assignmentId: submissionData.assignmentId,
           userId: userId,
+          contentMarkdown: evaluation.html,
           contentLink: submissionData.contentLink,
           attempts: 1,
         },
