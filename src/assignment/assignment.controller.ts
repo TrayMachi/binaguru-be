@@ -29,7 +29,7 @@ export class AssignmentController {
         code: 200,
         message: 'Assignment details retrieved successfully',
       },
-      assignmentDetail,
+      { data: { ...assignmentDetail } },
     );
   }
 }
