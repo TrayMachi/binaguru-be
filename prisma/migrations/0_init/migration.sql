@@ -1,10 +1,33 @@
+-- CreateEnum
+CREATE TYPE "Level" AS ENUM ('TK_A', 'TK_B', 'SD_Kelas_1', 'SD_Kelas_2', 'SD_Kelas_3', 'SD_Kelas_4', 'SD_Kelas_5', 'SD_Kelas_6', 'SMP_Kelas_7', 'SMP_Kelas_8', 'SMP_Kelas_9', 'SMA_Kelas_10', 'SMA_Kelas_11', 'SMA_Kelas_12', 'SMK_Kelas_10', 'SMK_Kelas_11', 'SMK_Kelas_12', 'D3_Semester_1', 'D3_Semester_2', 'D3_Semester_3', 'D3_Semester_4', 'D3_Semester_5', 'D3_Semester_6', 'S1_Semester_1', 'S1_Semester_2', 'S1_Semester_3', 'S1_Semester_4', 'S1_Semester_5', 'S1_Semester_6', 'S1_Semester_7', 'S1_Semester_8', 'S2_Semester_1', 'S2_Semester_2', 'S2_Semester_3', 'S2_Semester_4', 'Umum');
+
+-- CreateTable
+CREATE TABLE "User" (
+    "id" TEXT NOT NULL,
+    "username" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "yoe" INTEGER NOT NULL,
+    "pros" TEXT[],
+    "cons" TEXT[],
+    "location" TEXT NOT NULL,
+    "birthDate" TIMESTAMP(3) NOT NULL,
+    "level" "Level" NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateTable
 CREATE TABLE "Course" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "level" TEXT NOT NULL,
+    "level" "Level" NOT NULL,
+    "language" TEXT NOT NULL,
+    "courseType" TEXT NOT NULL,
+    "courseSubject" TEXT NOT NULL,
     "moduleCount" INTEGER NOT NULL DEFAULT 0,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -41,7 +64,7 @@ CREATE TABLE "Submission" (
     "id" TEXT NOT NULL,
     "assignmentId" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
-    "contentMarkdown" TEXT NOT NULL,
+    "contentLink" TEXT NOT NULL,
     "attempts" INTEGER NOT NULL DEFAULT 1,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -56,7 +79,7 @@ CREATE TABLE "RPP" (
     "title" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "contentMarkdown" TEXT NOT NULL,
-    "classLevel" TEXT NOT NULL,
+    "level" "Level" NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -74,6 +97,9 @@ CREATE TABLE "UserCourseProgress" (
 
     CONSTRAINT "UserCourseProgress_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
 CREATE INDEX "Course_userId_idx" ON "Course"("userId");
@@ -131,3 +157,4 @@ ALTER TABLE "UserCourseProgress" ADD CONSTRAINT "UserCourseProgress_userId_fkey"
 
 -- AddForeignKey
 ALTER TABLE "UserCourseProgress" ADD CONSTRAINT "UserCourseProgress_courseId_fkey" FOREIGN KEY ("courseId") REFERENCES "Course"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
