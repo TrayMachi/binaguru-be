@@ -39,7 +39,7 @@ export class ModuleController {
         code: 200,
         message: 'Module details retrieved successfully',
       },
-      moduleDetail,
+      { data: { ...moduleDetail } },
     );
   }
 
