@@ -45,13 +45,13 @@ export class SubmissionController {
     });
   }
 
-  @Get(':id')
+  @Get(':id') // id is the assignment id
   async getSubmissionById(@Req() req: Request, @Param('id') id: string) {
     //@ts-expect-error
     const user: { email: string } = req.user;
 
     const userData = await this.userService.getUserData(user.email);
-    const submissionDetail = await this.submissionService.getSubmissionById(
+    const submissionDetail = await this.submissionService.getSubmissionByAssignmentId(
       id,
       userData.id,
     );

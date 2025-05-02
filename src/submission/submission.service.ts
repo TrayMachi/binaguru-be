@@ -124,9 +124,15 @@ export class SubmissionService {
     }
   }
 
-  async getSubmissionById(id: string, userId: string) {
+  async getSubmissionByAssignmentId(id: string, userId: string) {
+
     const submission = await this.prisma.submission.findUnique({
-      where: { id },
+      where: {
+        assignmentId_userId: {
+          assignmentId: id,
+          userId: userId,
+        },
+      },
     });
 
     if (!submission) {
