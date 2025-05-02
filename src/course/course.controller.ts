@@ -63,11 +63,10 @@ export class CourseController {
   @Post()
   async createCourse(@Body() courseData: CreateCourseDto, @Req() req: Request) {
     //@ts-expect-error
-    const user: { email: string } = req.user;
+    const user: { sub: string } = req.user;
 
-    const userData = await this.userService.getUserData(user.email);
     const newCourse = await this.courseService.createCourse(
-      userData.id,
+      user.sub,
       courseData,
     );
 
@@ -76,7 +75,7 @@ export class CourseController {
         code: 201,
         message: 'Course created successfully',
       },
-      newCourse,
+      { data: { newCourse } },
     );
   }
 }
